@@ -1,0 +1,46 @@
+{
+  "subtle": {
+    "action": "exclude",
+    "reason": "too well-known; not useful as a vocabulary prompt"
+  },
+  "thirteen": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "seventeen": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "twentieth": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "nineteenth": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "eighteenth": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "sixteenth": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "xviii": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "xxiii": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "xxvii": {
+    "action": "exclude",
+    "reason": "number word, not useful vocabulary"
+  },
+  "chairmen": {
+    "action": "exclude",
+    "reason": "irregular plural not caught by lemmatizer; singular form likely already present"
+  }
+}
