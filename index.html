@@ -143,6 +143,8 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:28px 1
     <label class="rcl"><input type="checkbox" class="rc" data-rarity="everyday"><span class="rcb"></span>Everyday</label>
     <label class="rcl"><input type="checkbox" class="rc" data-rarity="uncommon"><span class="rcb"></span>Uncommon</label>
     <label class="rcl"><input type="checkbox" class="rc" data-rarity="rare" checked><span class="rcb"></span>Rare</label>
+    <span class="rfl" style="margin-left:10px;border-left:1px solid var(--rule);padding-left:10px">Include:</span>
+    <label class="rcl"><input type="checkbox" id="conctog"><span class="rcb"></span>Object words</label>
   </div>
   <div id="card">
     <div class="card-actions">
@@ -218,11 +220,15 @@ let fam=JSON.parse(localStorage.getItem('lx-fam')||'{}');
 let etymOpen=false, showingAll=false, adOpen=false;
 let activeGenres=new Set(['fiction','poetry','drama','religious','nonfiction']);
 let activeRarities=new Set(JSON.parse(localStorage.getItem('lx-rarity')||'["rare"]'));
+let showConcrete=JSON.parse(localStorage.getItem('lx-concrete')||'false');
 
 function applyRarityFilter(list){
-  if(activeRarities.size===3) return list;
-  return list.filter(w=>activeRarities.has(w.band));
+  let out = activeRarities.size===3 ? list : list.filter(w=>activeRarities.has(w.band));
+  if(!showConcrete) out = out.filter(w=>!w.concrete);
+  return out;
 }
+
+let firstLoad=true;
 
 function persist(){localStorage.setItem('lx-saved',JSON.stringify([...saved]));localStorage.setItem('lx-fam',JSON.stringify(fam));}
 function escR(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
@@ -379,6 +385,7 @@ function rebuildDisplayWords(){
     ? words.filter(w=>w.word.toLowerCase().includes(currentSearchQuery)||w.definition.toLowerCase().includes(currentSearchQuery))
     : [...words];
   displayWords = applyRarityFilter(list);
+  if(firstLoad && displayWords.length){idx=Math.floor(Math.random()*displayWords.length);firstLoad=false;}
 }
 
 let st;
@@ -402,6 +409,14 @@ document.querySelectorAll('.rc').forEach(cb=>{
     rebuildDisplayWords();
     idx=0;etymOpen=false;render();
   });
+});
+const conctog=document.getElementById('conctog');
+conctog.checked=showConcrete;
+conctog.addEventListener('change',()=>{
+  showConcrete=conctog.checked;
+  localStorage.setItem('lx-concrete', JSON.stringify(showConcrete));
+  rebuildDisplayWords();
+  idx=0;etymOpen=false;render();
 });
 document.getElementById('pb').addEventListener('click',()=>{if(idx>0){idx--;etymOpen=false;render();}});
 document.getElementById('nb').addEventListener('click',()=>{if(idx<displayWords.length-1){idx++;etymOpen=false;render();}});
