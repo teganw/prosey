@@ -143,6 +143,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:28px 1
     <label class="rcl"><input type="checkbox" class="rc" data-rarity="everyday"><span class="rcb"></span>Everyday</label>
     <label class="rcl"><input type="checkbox" class="rc" data-rarity="uncommon"><span class="rcb"></span>Uncommon</label>
     <label class="rcl"><input type="checkbox" class="rc" data-rarity="rare" checked><span class="rcb"></span>Rare</label>
+    <label class="rcl"><input type="checkbox" class="rc" data-rarity="morerare" checked><span class="rcb"></span>More rare</label>
     <span class="rfl" style="margin-left:10px;border-left:1px solid var(--rule);padding-left:10px">Include:</span>
     <label class="rcl"><input type="checkbox" id="conctog"><span class="rcb"></span>Object words</label>
   </div>
@@ -219,11 +220,11 @@ let saved=new Set(JSON.parse(localStorage.getItem('lx-saved')||'[]'));
 let fam=JSON.parse(localStorage.getItem('lx-fam')||'{}');
 let etymOpen=false, showingAll=false, adOpen=false;
 let activeGenres=new Set(['fiction','poetry','drama','religious','nonfiction']);
-let activeRarities=new Set(JSON.parse(localStorage.getItem('lx-rarity')||'["rare"]'));
+let activeRarities=new Set(JSON.parse(localStorage.getItem('lx-rarity')||'["rare","morerare"]'));
 let showConcrete=JSON.parse(localStorage.getItem('lx-concrete')||'false');
 
 function applyRarityFilter(list){
-  let out = activeRarities.size===3 ? list : list.filter(w=>activeRarities.has(w.band));
+  let out = activeRarities.size===4 ? list : list.filter(w=>activeRarities.has(w.band));
   if(!showConcrete) out = out.filter(w=>!w.concrete);
   return out;
 }
@@ -290,9 +291,9 @@ function renderEx(w){
   }
 }
 
-function render(){
+function render(keepOpen){
   if(!displayWords.length){document.getElementById('word').textContent='—';document.getElementById('defn').textContent='No words match.';return;}
-  const w=displayWords[idx];showingAll=false;adOpen=false;
+  const w=displayWords[idx];if(!keepOpen){showingAll=false;adOpen=false;}
   document.getElementById('word').textContent=w.word;
   document.getElementById('pos').textContent=w.pos;
   document.getElementById('defn').textContent=w.definition;
@@ -424,8 +425,8 @@ document.getElementById('shuf').addEventListener('click',()=>{for(let i=displayW
 document.getElementById('sb').addEventListener('click',()=>{const w=displayWords[idx];if(!w)return;if(saved.has(w.word))saved.delete(w.word);else saved.add(w.word);persist();render();});
 document.getElementById('spk').addEventListener('click',()=>{const w=displayWords[idx];if(!w||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w.word);u.lang='en-US';u.rate=0.85;const btn=document.getElementById('spk');btn.classList.add('speaking');u.onend=u.onerror=()=>btn.classList.remove('speaking');speechSynthesis.speak(u);});
 document.querySelectorAll('.fb').forEach(btn=>{btn.addEventListener('click',()=>{const w=displayWords[idx];if(!w)return;if(fam[w.word]===btn.dataset.fam)delete fam[w.word];else fam[w.word]=btn.dataset.fam;persist();render();});});
-document.getElementById('etog').addEventListener('click',()=>{etymOpen=!etymOpen;render();});
-document.getElementById('adtog').addEventListener('click',()=>{adOpen=!adOpen;render();});
+document.getElementById('etog').addEventListener('click',()=>{etymOpen=!etymOpen;render(true);});
+document.getElementById('adtog').addEventListener('click',()=>{adOpen=!adOpen;render(true);});
 document.getElementById('sab').addEventListener('click',()=>{showingAll=true;renderEx(displayWords[idx]);});
 document.getElementById('svbtn').addEventListener('click',showSaved);
 document.getElementById('clv').addEventListener('click',closeSaved);

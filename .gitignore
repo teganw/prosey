@@ -1,0 +1,10 @@
+AGENTS.md
+CLAUDECODE_BUILD.md
+
+# Build artifacts / local dev
+.venv/
+__pycache__/
+books/
+*.log
+words_data.backup.json
+*.bak
